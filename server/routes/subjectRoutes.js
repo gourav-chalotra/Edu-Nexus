@@ -4,7 +4,9 @@ import {
     getSubject,
     createSubject,
     updateSubject,
-    deleteSubject
+    deleteSubject,
+    assignTeacher,
+    unassignTeacher
 } from '../controllers/subjectController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -18,6 +20,10 @@ router.route('/:id')
     .get(protect, getSubject)
     .put(protect, authorize('teacher', 'admin'), updateSubject)
     .delete(protect, authorize('admin'), deleteSubject);
+
+// Teacher assignment routes
+router.post('/:subjectId/assign-teacher/:teacherId', protect, authorize('admin'), assignTeacher);
+router.delete('/:subjectId/unassign-teacher/:teacherId', protect, authorize('admin'), unassignTeacher);
 
 export default router;
 

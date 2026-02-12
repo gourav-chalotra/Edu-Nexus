@@ -14,6 +14,7 @@ export const CurriculumProvider = ({ children }) => {
     // Fetch all subjects and chapters on mount
     useEffect(() => {
         const fetchCurriculum = async () => {
+            setLoading(true);
             try {
                 const response = await subjectAPI.getAll();
                 const subjects = response.data.data;
@@ -32,6 +33,8 @@ export const CurriculumProvider = ({ children }) => {
             } catch (error) {
                 console.error('Failed to fetch curriculum:', error);
                 toast.error('Failed to load curriculum data');
+                // Set empty curriculum on error to avoid blank state
+                setCurriculum({});
             } finally {
                 setLoading(false);
             }
@@ -231,7 +234,7 @@ export const CurriculumProvider = ({ children }) => {
             getSubject,
             refreshCurriculum
         }}>
-            {!loading && children}
+            {children}
         </CurriculumContext.Provider>
     );
 };

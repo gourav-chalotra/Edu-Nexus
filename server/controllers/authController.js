@@ -6,7 +6,7 @@ import generateToken from '../utils/generateToken.js';
 // @access  Public
 export const register = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, classLevel } = req.body;
 
         // Check if user exists
         const userExists = await User.findOne({ email });
@@ -22,7 +22,12 @@ export const register = async (req, res) => {
             name,
             email,
             password,
-            role: role || 'student'
+            role: role || 'student',
+            classLevel,
+            avatar: 'Felix',
+            xp: 0,
+            level: 1,
+            streak: 0
         });
 
         // Generate token
@@ -31,15 +36,15 @@ export const register = async (req, res) => {
         res.status(201).json({
             success: true,
             data: {
-                _id: user._id,
+                id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                avatar: user.avatar,
                 xp: user.xp,
                 level: user.level,
                 streak: user.streak,
-                badges: user.badges,
-                completedChapters: user.completedChapters
+                badges: user.badges
             },
             token
         });
@@ -76,7 +81,7 @@ export const login = async (req, res) => {
         }
 
         // Check if password matches
-        const isMatch = await user.comparePassword(password);
+        const isMatch = await user.matchPassword(password);
         if (!isMatch) {
             return res.status(401).json({
                 success: false,
@@ -88,8 +93,8 @@ export const login = async (req, res) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        if (user.lastLoginDate) {
-            const lastLogin = new Date(user.lastLoginDate);
+        if (user.lastStreamDate) {
+            const lastLogin = new Date(user.lastStreamDate);
             lastLogin.setHours(0, 0, 0, 0);
             
             const diffTime = today - lastLogin;
@@ -98,6 +103,73 @@ export const login = async (req, res) => {
             if (diffDays === 1) {
                 user.streak += 1;
             } else if (diffDays > 1) {
+                user.streak = 1;
+            }
+        } else {
+            user.streak = 1;
+        }
+
+        user.lastStreamDate = new Date();
+        await user.save();
+
+        // Generate token
+        const token = generateToken(user._id);
+
+        res.json({
+            success: true,
+            data: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                avatar: user.avatar,
+                xp: user.xp,
+                level: user.level,
+                streak: user.streak,
+                classLevel: user.classLevel,
+                badges: user.badges,
+                assignedSubjects: user.assignedSubjects
+            },
+            token
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Get current logged in user
+// @route   GET /api/auth/me
+// @access  Private
+export const getMe = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        res.json({
+            success: true,
+            data: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                avatar: user.avatar,
+                xp: user.xp,
+                level: user.level,
+                streak: user.streak,
+                classLevel: user.classLevel,
+                badges: user.badges,
+                assignedSubjects: user.assignedSubjects
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
                 user.streak = 1;
             }
         } else {

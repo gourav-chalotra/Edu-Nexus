@@ -1,5 +1,6 @@
 import Subject from '../models/Subject.js';
 import Chapter from '../models/Chapter.js';
+import User from '../models/User.js';
 
 // @desc    Get all subjects
 // @route   GET /api/subjects
@@ -47,6 +48,160 @@ export const getSubject = async (req, res) => {
                 ...subject.toObject(),
                 chapters
             }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Create new subject
+// @route   POST /api/subjects
+// @access  Private (Teacher/Admin)
+export const createSubject = async (req, res) => {
+    try {
+        const { id, title, description, icon, class: className } = req.body;
+
+        const subject = await Subject.create({
+            id,
+            title,
+            description,
+            icon,
+            class: className,
+            createdBy: req.user._id
+        });
+
+        res.status(201).json({
+            success: true,
+            data: subject
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Update subject
+// @route   PUT /api/subjects/:id
+// @access  Private (Teacher/Admin)
+export const updateSubject = async (req, res) => {
+    try {
+        const subject = await Subject.findOneAndUpdate(
+            { id: req.params.id },
+            req.body,
+            { new: true, runValidators: true }
+        );
+
+        if (!subject) {
+            return res.status(404).json({
+                success: false,
+                message: 'Subject not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: subject
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Delete subject
+// @route   DELETE /api/subjects/:id
+// @access  Private (Admin)
+export const deleteSubject = async (req, res) => {
+    try {
+        const subject = await Subject.findOneAndUpdate(
+            { id: req.params.id },
+            { isActive: false },
+            { new: true }
+        );
+
+        if (!subject) {
+            return res.status(404).json({
+                success: false,
+                message: 'Subject not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Subject deleted successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Assign subject to teacher
+// @route   POST /api/subjects/:subjectId/assign-teacher/:teacherId
+// @access  Private (Admin)
+export const assignTeacher = async (req, res) => {
+    try {
+        const { subjectId, teacherId } = req.params;
+
+        const teacher = await User.findOne({ _id: teacherId, role: 'teacher' });
+        if (!teacher) {
+            return res.status(404).json({
+                success: false,
+                message: 'Teacher not found'
+            });
+        }
+
+        // Add subject to teacher's assignedSubjects
+        if (!teacher.assignedSubjects.includes(subjectId)) {
+            teacher.assignedSubjects.push(subjectId);
+            await teacher.save();
+        }
+
+        res.json({
+            success: true,
+            message: 'Subject assigned to teacher',
+            data: teacher
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Unassign subject from teacher
+// @route   DELETE /api/subjects/:subjectId/unassign-teacher/:teacherId
+// @access  Private (Admin)
+export const unassignTeacher = async (req, res) => {
+    try {
+        const { subjectId, teacherId } = req.params;
+
+        const teacher = await User.findOne({ _id: teacherId, role: 'teacher' });
+        if (!teacher) {
+            return res.status(404).json({
+                success: false,
+                message: 'Teacher not found'
+            });
+        }
+
+        // Remove subject from teacher's assignedSubjects
+        teacher.assignedSubjects = teacher.assignedSubjects.filter(id => id !== subjectId);
+        await teacher.save();
+
+        res.json({
+            success: true,
+            message: 'Subject unassigned from teacher',
+            data: teacher
         });
     } catch (error) {
         res.status(500).json({

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import { authAPI, userAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
@@ -85,13 +85,8 @@ export const AuthProvider = ({ children }) => {
 
     const updateProfile = async (data) => {
         try {
-            // Call API to persist
-            // We assume userAPI is imported or available via import { userAPI } from '../services/api';
-            // It is imported as 'authAPI' at top ? No, need to import userAPI.
-            // Wait, import is: import { authAPI } from '../services/api'; 
-            // I need to update import too.
-            const response = await import('../services/api').then(m => m.userAPI.updateProfile(data));
-            const updatedUser = response.data.data;
+            const response = await userAPI.updateProfile(data);
+            const updatedUser = response.data;
 
             setUser(updatedUser);
             localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -115,7 +110,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };
