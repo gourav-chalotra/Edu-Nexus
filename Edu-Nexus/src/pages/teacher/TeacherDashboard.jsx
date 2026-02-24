@@ -288,239 +288,242 @@ const TeacherDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6 md:p-8">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6 md:p-8 font-quicksand transition-colors duration-300">
             <div className="max-w-7xl mx-auto space-y-8">
-                <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border-[3px] border-slate-200 dark:border-slate-700 cartoon-border pop-shadow gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center text-secondary-600 font-bold text-xl">
-                            {user?.name?.charAt(0) || 'T'}
+                        <div className="bg-[#6366f1] p-3 rounded-2xl shadow-inner border-[3px] border-[#4f46e5]">
+                            <span className="text-white font-black text-xl drop-shadow-sm">{user?.name?.charAt(0) || 'T'}</span>
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-800">Teacher Dashboard</h1>
-                            <p className="text-slate-500 text-sm">Welcome back, {user?.name}</p>
+                            <h1 className="text-2xl font-display font-black text-slate-900 dark:text-white tracking-wide">Teacher Dashboard</h1>
+                            <p className="text-sm font-bold text-slate-500 dark:text-slate-400">Welcome back, {user?.name}</p>
                         </div>
                     </div>
-                    <button onClick={logout} className="text-red-500 hover:text-red-700 font-medium px-4 py-2 hover:bg-red-50 rounded-lg transition-colors">
+                    <button onClick={logout} className="text-[#ef4444] font-bold hover:bg-[#ef4444]/10 dark:hover:bg-[#ef4444]/20 px-6 py-3 rounded-xl transition-colors border-2 border-transparent hover:border-[#ef4444]/20 flex items-center gap-2">
                         Logout
                     </button>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex border-b border-slate-200 bg-white rounded-t-xl px-4 pt-2">
-                    <button
-                        onClick={() => setActiveTab('content')}
-                        className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors border-b-2 ${activeTab === 'content'
-                                ? 'text-indigo-600 border-indigo-600'
-                                : 'text-slate-600 border-transparent hover:text-slate-800'
-                            }`}
-                    >
-                        <BookOpen className="w-4 h-4" />
-                        Content Management
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('performance')}
-                        className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors border-b-2 ${activeTab === 'performance'
-                                ? 'text-indigo-600 border-indigo-600'
-                                : 'text-slate-600 border-transparent hover:text-slate-800'
-                            }`}
-                    >
-                        <BarChart2 className="w-4 h-4" />
-                        Student Performance
-                    </button>
+                {/* Main Content Area */}
+                <div className="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border-[3px] border-slate-200 dark:border-slate-700 cartoon-border pop-shadow overflow-hidden flex flex-col">
+                    {/* Tabs */}
+                    <div className="flex border-b-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                        <button
+                            onClick={() => setActiveTab('content')}
+                            className={`flex-1 flex items-center justify-center gap-3 px-6 py-5 font-bold text-lg transition-colors border-r-[3px] border-slate-200 dark:border-slate-700 ${activeTab === 'content'
+                                ? 'text-[#6366f1] dark:text-[#818cf8] bg-white dark:bg-slate-800 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-[#6366f1]'
+                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                                }`}
+                        >
+                            <BookOpen className={activeTab === 'content' ? 'animate-bounce' : ''} />
+                            Content Management
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('performance')}
+                            className={`flex-1 flex items-center justify-center gap-3 px-6 py-5 font-bold text-lg transition-colors ${activeTab === 'performance'
+                                ? 'text-[#6366f1] dark:text-[#818cf8] bg-white dark:bg-slate-800 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-[#6366f1]'
+                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                                }`}
+                        >
+                            <BarChart2 className={activeTab === 'performance' ? 'animate-bounce' : ''} />
+                            Student Performance
+                        </button>
+                    </div>
+
+                    <div className="p-6 sm:p-8 flex-1">
+
+                        {/* Content Management Tab */}
+                        {activeTab === 'content' && (
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4">
+                                <div className="lg:col-span-2 space-y-6">
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="text-xl font-bold text-slate-800">Manage Curriculum</h2>
+                                        <div className="text-sm text-slate-500">
+                                            Assigned Subjects: {subjects.length}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <button onClick={() => openModal('create_chapter')} className="bg-[#6366f1] p-6 rounded-[2rem] shadow-sm border-b-[5px] border-[#4f46e5] active:border-b-0 active:translate-y-[5px] text-left group transition-all">
+                                            <div className="bg-white/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border-[3px] border-white/20"><Plus className="text-white w-7 h-7" strokeWidth={3} /></div>
+                                            <h3 className="font-display font-black text-white text-xl">Add New Chapter</h3>
+                                            <p className="font-bold text-white/80 mt-1">Create a new unit for {curriculum[selectedSubjectId]?.name || 'a subject'}</p>
+                                        </button>
+
+                                        <button onClick={() => openModal('edit_chapter')} className="bg-[#f97316] p-6 rounded-[2rem] shadow-sm border-b-[5px] border-[#ea580c] active:border-b-0 active:translate-y-[5px] text-left group transition-all">
+                                            <div className="bg-white/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border-[3px] border-white/20"><Edit3 className="text-white w-7 h-7" strokeWidth={3} /></div>
+                                            <h3 className="font-display font-black text-white text-xl">Edit Details</h3>
+                                            <p className="font-bold text-white/80 mt-1">Update title & topics</p>
+                                        </button>
+
+                                        <button onClick={() => openModal('video')} className="bg-[#ef4444] p-6 rounded-[2rem] shadow-sm border-b-[5px] border-[#dc2626] active:border-b-0 active:translate-y-[5px] text-left group transition-all">
+                                            <div className="bg-white/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border-[3px] border-white/20"><Youtube className="text-white w-7 h-7" strokeWidth={3} /></div>
+                                            <h3 className="font-display font-black text-white text-xl">Update Video</h3>
+                                            <p className="font-bold text-white/80 mt-1">Add YouTube links</p>
+                                        </button>
+
+                                        <button onClick={() => openModal('teacher_note')} className="bg-[#3b82f6] p-6 rounded-[2rem] shadow-sm border-b-[5px] border-[#2563eb] active:border-b-0 active:translate-y-[5px] text-left group transition-all">
+                                            <div className="bg-white/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border-[3px] border-white/20"><FileText className="text-white w-7 h-7" strokeWidth={3} /></div>
+                                            <h3 className="font-display font-black text-white text-xl">Teacher's Note</h3>
+                                            <p className="font-bold text-white/80 mt-1">Add tips for students</p>
+                                        </button>
+
+                                        <button onClick={() => openModal('quiz')} className="bg-[#8b5cf6] p-6 rounded-[2rem] shadow-sm border-b-[5px] border-[#7c3aed] active:border-b-0 active:translate-y-[5px] text-left group transition-all">
+                                            <div className="bg-white/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border-[3px] border-white/20"><Upload className="text-white w-7 h-7" strokeWidth={3} /></div>
+                                            <h3 className="font-display font-black text-white text-xl">Create Quiz</h3>
+                                            <p className="font-bold text-white/80 mt-1">MCQ & Fill-in Builder</p>
+                                        </button>
+
+                                        <button onClick={() => openModal('notes')} className="bg-[#10b981] p-6 rounded-[2rem] shadow-sm border-b-[5px] border-[#059669] active:border-b-0 active:translate-y-[5px] text-left group transition-all">
+                                            <div className="bg-white/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border-[3px] border-white/20"><Upload className="text-white w-7 h-7" strokeWidth={3} /></div>
+                                            <h3 className="font-display font-black text-white text-xl">Upload Attachment</h3>
+                                            <p className="font-bold text-white/80 mt-1">Share PDFs or docs</p>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Context Sidebar */}
+                                <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm border-[3px] border-slate-200 dark:border-slate-700 h-fit cartoon-border">
+                                    <h3 className="font-display font-black text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+                                        <CheckCircle className="w-5 h-5 text-[#10b981]" />
+                                        Current Selection
+                                    </h3>
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Subject</label>
+                                            <div className="font-bold text-slate-800 dark:text-slate-200 mt-1 text-lg">
+                                                {curriculum[selectedSubjectId]?.name || 'Loading...'}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Chapter</label>
+                                            <div className="font-bold text-slate-800 dark:text-slate-200 mt-1 text-lg">
+                                                {getSelectedChapter()?.title || 'No Chapters Created'}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Status</label>
+                                            <div className="mt-2 flex flex-wrap gap-2">
+                                                {getSelectedChapter()?.content?.videoUrl ? (
+                                                    <span className="px-3 py-1 bg-[#10b981]/10 border-2 border-[#10b981]/20 text-[#10b981] text-xs font-bold rounded-lg">Video Ready</span>
+                                                ) : (
+                                                    <span className="px-3 py-1 bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 text-xs font-bold rounded-lg">No Video</span>
+                                                )}
+                                                {getSelectedChapter()?.quiz ? (
+                                                    <span className="px-3 py-1 bg-[#8b5cf6]/10 border-2 border-[#8b5cf6]/20 text-[#8b5cf6] text-xs font-bold rounded-lg">Quiz Active</span>
+                                                ) : (
+                                                    <span className="px-3 py-1 bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 text-xs font-bold rounded-lg">No Quiz</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Performance Tab */}
+                        {activeTab === 'performance' && (
+                            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                    <div>
+                                        <h2 className="text-xl font-display font-black text-slate-800 dark:text-white">Student Progress Report</h2>
+                                        <p className="text-slate-500 dark:text-slate-400 font-medium">Overview of student performance in your subjects</p>
+                                    </div>
+                                </div>
+                                <div className="overflow-x-auto rounded-2xl border-[3px] border-slate-200 dark:border-slate-700 cartoon-border bg-white dark:bg-slate-800">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead className="bg-slate-50 dark:bg-slate-900/50 border-b-[3px] border-slate-200 dark:border-slate-700">
+                                            <tr>
+                                                <th className="p-5 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Student</th>
+                                                <th className="p-5 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Level</th>
+                                                <th className="p-5 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Total XP</th>
+                                                <th className="p-5 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y-[3px] divide-slate-100 dark:divide-slate-700/50">
+                                            {students.map(student => (
+                                                <tr key={student.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                                                    <td className="p-5">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 overflow-hidden border-[3px] border-slate-200 dark:border-slate-600 flex items-center justify-center text-xl">
+                                                                {student.avatar || '🎓'}
+                                                            </div>
+                                                            <div>
+                                                                <div className="font-bold text-slate-900 dark:text-slate-100 text-sm">{student.name}</div>
+                                                                <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{student.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-5">
+                                                        <span className="px-3 py-1 bg-[#f59e0b]/10 text-[#f59e0b] rounded-lg text-xs font-bold border-2 border-[#f59e0b]/20">
+                                                            Lvl {student.level || 1}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-5 font-black text-[#6366f1] dark:text-[#818cf8]">
+                                                        {student.xp || 0} XP
+                                                    </td>
+                                                    <td className="p-5 text-right">
+                                                        <button className="text-[#14b8a6] hover:text-[#0d9488] font-bold text-sm underline">View Details</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {students.length === 0 && (
+                                                <tr>
+                                                    <td colSpan="4" className="p-8 text-center text-slate-400 dark:text-slate-500 font-bold">
+                                                        No students found.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-
-                {/* Content Management Tab */}
-                {activeTab === 'content' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4">
-                        <div className="lg:col-span-2 space-y-6">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-slate-800">Manage Curriculum</h2>
-                                <div className="text-sm text-slate-500">
-                                    Assigned Subjects: {subjects.length}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <button onClick={() => openModal('create_chapter')} className="card hover:shadow-md transition-all hover:-translate-y-1 text-left group border-dashed border-2 border-slate-300 bg-slate-50">
-                                    <div className="bg-white w-12 h-12 rounded-lg flex items-center justify-center mb-4 shadow-sm"><Plus className="text-slate-600" /></div>
-                                    <h3 className="font-bold text-slate-700">Add New Chapter</h3>
-                                    <p className="text-sm text-slate-500 mt-1">Create a new unit for {curriculum[selectedSubjectId]?.name || 'a subject'}</p>
-                                </button>
-
-                                <button onClick={() => openModal('edit_chapter')} className="card hover:shadow-md transition-all hover:-translate-y-1 text-left group">
-                                    <div className="bg-orange-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors"><Edit3 className="text-orange-600" /></div>
-                                    <h3 className="font-bold text-slate-700">Edit Details</h3>
-                                    <p className="text-sm text-slate-500 mt-1">Update title & topics</p>
-                                </button>
-
-                                <button onClick={() => openModal('video')} className="card hover:shadow-md transition-all hover:-translate-y-1 text-left group">
-                                    <div className="bg-red-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-100 transition-colors"><Youtube className="text-red-600" /></div>
-                                    <h3 className="font-bold text-slate-700">Update Video</h3>
-                                    <p className="text-sm text-slate-500 mt-1">Add YouTube links</p>
-                                </button>
-
-                                <button onClick={() => openModal('teacher_note')} className="card hover:shadow-md transition-all hover:-translate-y-1 text-left group">
-                                    <div className="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors"><FileText className="text-blue-600" /></div>
-                                    <h3 className="font-bold text-slate-700">Teacher's Note</h3>
-                                    <p className="text-sm text-slate-500 mt-1">Add tips for students</p>
-                                </button>
-
-                                <button onClick={() => openModal('quiz')} className="card hover:shadow-md transition-all hover:-translate-y-1 text-left group">
-                                    <div className="bg-secondary-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-secondary-100 transition-colors"><Upload className="text-secondary-600" /></div>
-                                    <h3 className="font-bold text-slate-700">Create Quiz</h3>
-                                    <p className="text-sm text-slate-500 mt-1">MCQ & Fill-in Builder</p>
-                                </button>
-
-                                <button onClick={() => openModal('notes')} className="card hover:shadow-md transition-all hover:-translate-y-1 text-left group">
-                                    <div className="bg-primary-50 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary-100 transition-colors"><Upload className="text-primary-600" /></div>
-                                    <h3 className="font-bold text-slate-700">Upload Attachment</h3>
-                                    <p className="text-sm text-slate-500 mt-1">Share PDFs or docs</p>
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Context Sidebar */}
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit">
-                            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                <CheckCircle className="w-5 h-5 text-green-500" />
-                                Current Selection
-                            </h3>
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-xs font-bold text-slate-500 uppercase">Subject</label>
-                                    <div className="font-medium text-slate-800 mt-1">
-                                        {curriculum[selectedSubjectId]?.name || 'Loading...'}
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="text-xs font-bold text-slate-500 uppercase">Chapter</label>
-                                    <div className="font-medium text-slate-800 mt-1">
-                                        {getSelectedChapter()?.title || 'No Chapters Created'}
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="text-xs font-bold text-slate-500 uppercase">Status</label>
-                                    <div className="mt-1 flex gap-2">
-                                        {getSelectedChapter()?.content?.videoUrl ? (
-                                            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Video Active</span>
-                                        ) : (
-                                            <span className="px-2 py-1 bg-slate-100 text-slate-500 text-xs rounded-full">No Video</span>
-                                        )}
-                                        {getSelectedChapter()?.quiz ? (
-                                            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">Quiz Ready</span>
-                                        ) : (
-                                            <span className="px-2 py-1 bg-slate-100 text-slate-500 text-xs rounded-full">No Quiz</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Performance Tab */}
-                {activeTab === 'performance' && (
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-4">
-                        <div className="p-6 border-b border-slate-200">
-                            <h2 className="text-lg font-bold text-slate-800">Student Progress Report</h2>
-                            <p className="text-slate-500 text-sm">Overview of student performance in your subjects</p>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-slate-50 text-slate-600 text-sm">
-                                    <tr>
-                                        <th className="p-4 font-medium">Student</th>
-                                        <th className="p-4 font-medium">Level</th>
-                                        <th className="p-4 font-medium">Total XP</th>
-                                        <th className="p-4 font-medium">Performance (Est.)</th>
-                                        <th className="p-4 font-medium text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 text-sm">
-                                    {students.map(student => (
-                                        <tr key={student.id} className="hover:bg-slate-50">
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-2xl">{student.avatar || '🎓'}</span>
-                                                    <div>
-                                                        <div className="font-medium text-slate-900">{student.name}</div>
-                                                        <div className="text-xs text-slate-500">{student.email}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="p-4">
-                                                <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">
-                                                    Lvl {student.level || 1}
-                                                </span>
-                                            </td>
-                                            <td className="p-4 font-bold text-indigo-600">{student.xp || 0} XP</td>
-                                            <td className="p-4">
-                                                {/* Mock performance indicator */}
-                                                <div className="w-24 bg-slate-200 rounded-full h-2 overflow-hidden">
-                                                    <div
-                                                        className="bg-green-500 h-full"
-                                                        style={{ width: `${Math.min(((student.xp || 0) / 2000) * 100, 100)}%` }}
-                                                    ></div>
-                                                </div>
-                                            </td>
-                                            <td className="p-4 text-right">
-                                                <button className="text-indigo-600 hover:underline">View Details</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {students.length === 0 && (
-                                        <tr>
-                                            <td colSpan="5" className="p-8 text-center text-slate-400">
-                                                No students found.
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
             </div>
 
             {/* Modal */}
             {showUploadModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className={`bg-white rounded-2xl shadow-2xl w-full ${modalMode === 'quiz' ? 'max-w-4xl' : 'max-w-lg'} overflow-y-auto max-h-[90vh] animate-in fade-in zoom-in duration-200`}>
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <h3 className="font-bold text-lg text-slate-800 capitalize">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 dark:bg-slate-900/90 backdrop-blur-sm min-h-screen">
+                    <div className={`bg-white dark:bg-slate-800 rounded-[2rem] shadow-2xl w-full ${modalMode === 'quiz' ? 'max-w-4xl' : 'max-w-lg'} max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200 border-[3px] border-slate-200 dark:border-slate-600 cartoon-border flex flex-col`}>
+                        <div className="p-6 border-b-[3px] border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 flex justify-between items-center rounded-t-[2rem] shrink-0 sticky top-0 z-10">
+                            <h3 className="font-display font-black text-xl text-slate-800 dark:text-white capitalize tracking-wide">
                                 {modalMode === 'quiz' ? 'Create Quiz' : modalMode.replace('_', ' ')}
                             </h3>
-                            <button onClick={() => setShowUploadModal(false)} className="text-slate-400 hover:text-slate-600">
-                                <X size={20} />
+                            <button type="button" onClick={() => setShowUploadModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-white dark:bg-slate-700 p-2 rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 transition-colors">
+                                <X size={20} strokeWidth={3} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        <form onSubmit={handleSubmit} className="p-6 space-y-5">
                             {/* Subject & Chapter Selection */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Subject</label>
+                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Subject</label>
                                     <select
-                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                                        className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-700 transition-colors outline-none cursor-pointer"
                                         value={selectedSubjectId}
                                         onChange={(e) => setSelectedSubjectId(e.target.value)}
                                     >
                                         {subjects.map(subject => (
-                                            <option key={subject.id} value={subject.id}>{subject.name || subject.title}</option>
+                                            <option key={subject.id} value={subject.id} className="font-bold">{subject.name || subject.title}</option>
                                         ))}
                                     </select>
                                 </div>
 
                                 {modalMode !== 'create_chapter' && (
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Chapter</label>
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Chapter</label>
                                         <select
-                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-700 transition-colors outline-none cursor-pointer"
                                             value={selectedChapterId}
                                             onChange={(e) => setSelectedChapterId(e.target.value)}
                                         >
                                             {curriculum[selectedSubjectId]?.chapters.map(chapter => (
-                                                <option key={chapter.id} value={chapter.id}>{chapter.title}</option>
+                                                <option key={chapter.id} value={chapter.id} className="font-bold">{chapter.title}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -531,33 +534,33 @@ const TeacherDashboard = () => {
                             {(modalMode === 'create_chapter' || modalMode === 'edit_chapter') && (
                                 <>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Chapter Title</label>
-                                        <input type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500" placeholder="e.g. Chapter 4: Optics" value={chapterTitle} onChange={(e) => setChapterTitle(e.target.value)} required />
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Chapter Title</label>
+                                        <input type="text" className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-700 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500" placeholder="e.g. Chapter 4: Optics" value={chapterTitle} onChange={(e) => setChapterTitle(e.target.value)} required />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                                        <textarea className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500" rows="2" placeholder="Overview..." value={chapterDesc} onChange={(e) => setChapterDesc(e.target.value)} required />
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Description</label>
+                                        <textarea className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-700 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500" rows="3" placeholder="Overview..." value={chapterDesc} onChange={(e) => setChapterDesc(e.target.value)} required />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Topics (One per line)</label>
-                                        <textarea className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500" rows="4" placeholder="Topic 1&#10;Topic 2" value={chapterTopics} onChange={(e) => setChapterTopics(e.target.value)} />
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Topics (One per line)</label>
+                                        <textarea className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-700 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500" rows="4" placeholder="Topic 1&#10;Topic 2" value={chapterTopics} onChange={(e) => setChapterTopics(e.target.value)} />
                                     </div>
                                 </>
                             )}
 
                             {modalMode === 'teacher_note' && (
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Note for Students</label>
-                                    <textarea className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-blue-50/50" rows="4" placeholder="Add important tips..." value={teacherNote} onChange={(e) => setTeacherNote(e.target.value)} />
+                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Note for Students</label>
+                                    <textarea className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-blue-50/50 dark:bg-[#3b82f6]/10 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#3b82f6] focus:bg-white dark:focus:bg-[#3b82f6]/20 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500" rows="4" placeholder="Add important tips..." value={teacherNote} onChange={(e) => setTeacherNote(e.target.value)} />
                                 </div>
                             )}
 
                             {modalMode === 'video' && (
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">YouTube Video Link</label>
+                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">YouTube Video Link</label>
                                     <div className="relative">
-                                        <Youtube className="absolute left-3 top-3 text-slate-400" size={18} />
-                                        <input type="text" className="w-full pl-10 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500" placeholder="YouTube URL..." value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} required />
+                                        <Youtube className="absolute left-4 top-4 text-slate-400 dark:text-slate-500" size={18} />
+                                        <input type="text" className="w-full pl-11 px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#ef4444] focus:bg-white dark:focus:bg-slate-700 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500" placeholder="YouTube URL..." value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} required />
                                     </div>
                                 </div>
                             )}
@@ -565,14 +568,16 @@ const TeacherDashboard = () => {
                             {modalMode === 'notes' && (
                                 <>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Attachment Title</label>
-                                        <input type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500" value={attachmentName} onChange={(e) => setAttachmentName(e.target.value)} required />
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Attachment Title</label>
+                                        <input type="text" className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-700 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500" value={attachmentName} onChange={(e) => setAttachmentName(e.target.value)} required />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">File</label>
-                                        <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:bg-slate-50 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                                            <Upload className="mx-auto text-slate-400 mb-2" />
-                                            <p className="text-sm text-slate-500">{attachmentFile ? attachmentFile.name : "Click to select file"}</p>
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">File</label>
+                                        <div className="border-[3px] border-dashed border-slate-300 dark:border-slate-600 rounded-2xl p-8 text-center hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer group" onClick={() => fileInputRef.current?.click()}>
+                                            <div className="bg-slate-100 dark:bg-slate-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                                <Upload className="text-slate-400 dark:text-slate-300" size={24} />
+                                            </div>
+                                            <p className="text-sm font-bold text-slate-500 dark:text-slate-400">{attachmentFile ? attachmentFile.name : "Click to select file"}</p>
                                             <input type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
                                         </div>
                                     </div>
@@ -583,10 +588,10 @@ const TeacherDashboard = () => {
                             {modalMode === 'quiz' && (
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Quiz Title</label>
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Quiz Title</label>
                                         <input
                                             type="text"
-                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-secondary-500"
+                                            className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-800 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
                                             value={quizTitle}
                                             onChange={(e) => setQuizTitle(e.target.value)}
                                             required
@@ -595,11 +600,11 @@ const TeacherDashboard = () => {
 
                                     <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                                         {questions.map((q, qIndex) => (
-                                            <div key={qIndex} className="p-4 border border-slate-200 rounded-xl bg-slate-50 relative group">
+                                            <div key={qIndex} className="p-6 border-[3px] border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-800/50 relative group shadow-sm cartoon-border">
                                                 <button
                                                     type="button"
                                                     onClick={() => removeQuestion(qIndex)}
-                                                    className="absolute top-4 right-4 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    className="absolute top-4 right-4 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-slate-800 p-2 rounded-xl border-2 border-slate-200 dark:border-slate-600 shadow-sm"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -608,7 +613,7 @@ const TeacherDashboard = () => {
                                                     <div>
                                                         <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Question Type</label>
                                                         <select
-                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                                            className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold text-sm focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-800 transition-colors outline-none"
                                                             value={q.type}
                                                             onChange={(e) => updateQuestion(qIndex, 'type', e.target.value)}
                                                         >
@@ -620,7 +625,7 @@ const TeacherDashboard = () => {
                                                         <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Points</label>
                                                         <input
                                                             type="number"
-                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                                            className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold text-sm focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-800 transition-colors outline-none"
                                                             value={q.points}
                                                             onChange={(e) => updateQuestion(qIndex, 'points', e.target.value)}
                                                         />
@@ -628,9 +633,9 @@ const TeacherDashboard = () => {
                                                 </div>
 
                                                 <div className="mb-4">
-                                                    <label className="block text-sm font-medium text-slate-700 mb-1">Question Text</label>
+                                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Question Text</label>
                                                     <textarea
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-secondary-500"
+                                                        className="w-full px-4 py-3 border-[3px] border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-0 focus:border-[#6366f1] focus:bg-white dark:focus:bg-slate-800 transition-colors outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
                                                         rows="2"
                                                         value={q.question}
                                                         onChange={(e) => updateQuestion(qIndex, 'question', e.target.value)}
@@ -639,7 +644,7 @@ const TeacherDashboard = () => {
                                                 </div>
 
                                                 <div className="mb-4">
-                                                    <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
+                                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest flex items-center gap-2">
                                                         <ImageIcon size={16} /> Optional Figure (Image)
                                                     </label>
                                                     <input
@@ -655,7 +660,7 @@ const TeacherDashboard = () => {
 
                                                 {q.type === 'mcq' && (
                                                     <div className="space-y-2 mb-4">
-                                                        <label className="block text-sm font-medium text-slate-700">Options</label>
+                                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Options</label>
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                             {q.options.map((opt, oIndex) => (
                                                                 <input
@@ -672,7 +677,7 @@ const TeacherDashboard = () => {
                                                 )}
 
                                                 <div>
-                                                    <label className="block text-sm font-medium text-slate-700 mb-1">Correct Answer</label>
+                                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Correct Answer</label>
                                                     <input
                                                         type="text"
                                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500"

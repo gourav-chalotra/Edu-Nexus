@@ -94,15 +94,15 @@ export const login = async (req, res) => {
         }
 
         // Update streak logic
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        if (user.lastStreamDate) {
-            const lastLogin = new Date(user.lastStreamDate);
-            lastLogin.setHours(0, 0, 0, 0);
+        if (user.lastActiveAt) {
+            const lastActive = new Date(user.lastActiveAt);
+            const lastActiveDate = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate());
 
-            const diffTime = today - lastLogin;
-            const diffDays = diffTime / (1000 * 60 * 60 * 24);
+            const diffTime = today - lastActiveDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
             if (diffDays === 1) {
                 user.streak += 1;
@@ -110,10 +110,10 @@ export const login = async (req, res) => {
                 user.streak = 1;
             }
         } else {
-            user.streak = 1;
+            user.streak = 1; // First time logging in or no previous record
         }
 
-        user.lastStreamDate = new Date();
+        user.lastActiveAt = now;
         await user.save();
 
         // Generate token
@@ -153,6 +153,52 @@ export const login = async (req, res) => {
 export const getMe = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Update streak logic on fetch profile too
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        // We only save if the streak was actually updated or if lastActiveAt needs to jump to today.
+        // It's technically fine to always save, but we can avoid it if lastActiveAt is already today.
+        let needsSave = false;
+
+        if (user.lastActiveAt) {
+            const lastActive = new Date(user.lastActiveAt);
+            const lastActiveDate = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate());
+
+            const diffTime = today - lastActiveDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                user.streak += 1;
+                user.lastActiveAt = now;
+                needsSave = true;
+            } else if (diffDays > 1) {
+                user.streak = 1;
+                user.lastActiveAt = now;
+                needsSave = true;
+            } else {
+                // diffDays === 0
+                // User is active again today, we could just update lastActiveAt
+                user.lastActiveAt = now;
+                needsSave = true;
+            }
+        } else {
+            user.streak = 1; // First time
+            user.lastActiveAt = now;
+            needsSave = true;
+        }
+
+        if (needsSave) {
+            await user.save();
+        }
 
         res.json({
             success: true,
