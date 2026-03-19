@@ -1,14 +1,48 @@
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { useCurriculum } from '../../context/CurriculumContext';
-import { ArrowLeft, BookOpen, PlayCircle } from 'lucide-react';
+import { ArrowLeft, BookOpen, PlayCircle, Star } from 'lucide-react';
+import { quizAPI } from '../../services/api';
 
 const SubjectDetail = () => {
     const { subjectId } = useParams();
     const navigate = useNavigate();
     const { curriculum } = useCurriculum();
     const subject = curriculum[subjectId];
+
+    const [chapterScores, setChapterScores] = useState({});
+
+    useEffect(() => {
+        const fetchScores = async () => {
+            try {
+                const response = await quizAPI.getMyAttempts();
+                if (response.data.success) {
+                    const attempts = response.data.data;
+                    const maxScores = {};
+
+                    attempts.forEach(attempt => {
+                        // Only process attempts for this subject
+                        if (attempt.subjectId === subjectId) {
+                            const currentMax = maxScores[attempt.chapterId] || 0;
+                            if (attempt.score > currentMax) {
+                                maxScores[attempt.chapterId] = attempt.score;
+                            }
+                        }
+                    });
+
+                    setChapterScores(maxScores);
+                }
+            } catch (error) {
+                console.error("Failed to fetch quiz attempts", error);
+            }
+        };
+
+        if (subject) {
+            fetchScores();
+        }
+    }, [subjectId, subject]);
 
     if (!subject) {
         return (
@@ -90,6 +124,12 @@ const SubjectDetail = () => {
                                             {topic}
                                         </span>
                                     ))}
+                                    {chapterScores[chapter.id] !== undefined && (
+                                        <div className="absolute top-4 right-4 sm:static sm:mb-4 sm:ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 dark:bg-amber-500/10 border-2 border-amber-200 dark:border-amber-500/30 rounded-xl text-amber-600 dark:text-amber-400 font-bold text-sm shadow-sm">
+                                            <Star size={16} className="fill-amber-400 text-amber-500" />
+                                            Best Score: {chapterScores[chapter.id]} XP
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t-2 border-slate-100 dark:border-slate-700/50">

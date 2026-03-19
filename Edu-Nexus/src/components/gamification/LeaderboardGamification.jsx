@@ -10,7 +10,7 @@ const Leaderboard = ({ limit = 5, showFull = false }) => {
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const response = await leaderboardAPI.getTopStudents(limit);
+                const response = await leaderboardAPI.get(limit);
                 setLeaders(response.data.data);
             } catch (error) {
                 console.error('Failed to fetch leaderboard:', error);

@@ -5,17 +5,23 @@ import User from '../models/User.js';
 // @access  Private
 export const getLeaderboard = async (req, res) => {
     try {
-        const limit = parseInt(req.query.limit) || 50;
+        const limitParam = req.query.limit;
         const { school, classLevel } = req.query;
 
         const query = { role: 'student' };
         if (school) query.school = new RegExp(school, 'i'); // Case-insensitive match
         if (classLevel) query.classLevel = parseInt(classLevel);
 
-        const users = await User.find(query)
+        let usersQuery = User.find(query)
             .select('name xp level streak badges school classLevel avatar')
-            .sort({ xp: -1 })
-            .limit(limit);
+            .sort({ xp: -1 });
+
+        if (limitParam !== 'all') {
+            const limit = parseInt(limitParam) || 50;
+            usersQuery = usersQuery.limit(limit);
+        }
+
+        const users = await usersQuery;
 
         const leaderboard = users.map((user, index) => ({
             rank: index + 1,

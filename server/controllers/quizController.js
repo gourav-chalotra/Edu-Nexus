@@ -156,8 +156,15 @@ export const submitQuiz = async (req, res) => {
             passed
         });
 
-        // Update user XP and level
+        // Update user XP, level, and daily stats
         user.addXP(xpEarned);
+
+        // Ensure daily stats are initialized (just in case)
+        if (typeof user.dailyXP !== 'number') user.dailyXP = 0;
+        if (typeof user.dailyQuizzes !== 'number') user.dailyQuizzes = 0;
+
+        user.dailyXP += xpEarned;
+        user.dailyQuizzes += 1;
 
         // Award badges
         const newBadges = [];
@@ -209,6 +216,8 @@ export const submitQuiz = async (req, res) => {
                 newBadges,
                 userStats: {
                     xp: user.xp,
+                    dailyXP: user.dailyXP,
+                    dailyQuizzes: user.dailyQuizzes,
                     level: user.level,
                     streak: user.streak
                 }
@@ -228,8 +237,7 @@ export const submitQuiz = async (req, res) => {
 export const getMyAttempts = async (req, res) => {
     try {
         const attempts = await QuizAttempt.find({ userId: req.user._id })
-            .sort({ completedAt: -1 })
-            .limit(20);
+            .sort({ completedAt: -1 });
 
         res.json({
             success: true,

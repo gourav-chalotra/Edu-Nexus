@@ -11,7 +11,7 @@ const Leaderboard = () => {
                 <p className="text-center text-slate-600 mb-12 max-w-2xl mx-auto">
                     Check out the top performers across Edu Nexus. Learn, earn XP, and climb the ranks to become a champion!
                 </p>
-                <LeaderboardComponent limit={20} showFull={true} />
+                <LeaderboardComponent limit="all" showFull={true} />
             </div>
         </div>
     );

@@ -106,11 +106,19 @@ export const login = async (req, res) => {
 
             if (diffDays === 1) {
                 user.streak += 1;
+                // It's a new day, reset daily stats
+                user.dailyXP = 0;
+                user.dailyQuizzes = 0;
             } else if (diffDays > 1) {
                 user.streak = 1;
+                // It's a new day, reset daily stats
+                user.dailyXP = 0;
+                user.dailyQuizzes = 0;
             }
         } else {
             user.streak = 1; // First time logging in or no previous record
+            user.dailyXP = 0;
+            user.dailyQuizzes = 0;
         }
 
         user.lastActiveAt = now;
@@ -130,6 +138,8 @@ export const login = async (req, res) => {
                 xp: user.xp,
                 level: user.level,
                 streak: user.streak,
+                dailyXP: user.dailyXP,
+                dailyQuizzes: user.dailyQuizzes,
                 classLevel: user.classLevel,
                 stream: user.stream,
                 school: user.school,
@@ -178,10 +188,14 @@ export const getMe = async (req, res) => {
 
             if (diffDays === 1) {
                 user.streak += 1;
+                user.dailyXP = 0;
+                user.dailyQuizzes = 0;
                 user.lastActiveAt = now;
                 needsSave = true;
             } else if (diffDays > 1) {
                 user.streak = 1;
+                user.dailyXP = 0;
+                user.dailyQuizzes = 0;
                 user.lastActiveAt = now;
                 needsSave = true;
             } else {
@@ -192,6 +206,8 @@ export const getMe = async (req, res) => {
             }
         } else {
             user.streak = 1; // First time
+            user.dailyXP = 0;
+            user.dailyQuizzes = 0;
             user.lastActiveAt = now;
             needsSave = true;
         }

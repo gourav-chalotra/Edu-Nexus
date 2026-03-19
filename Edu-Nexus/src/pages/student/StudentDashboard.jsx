@@ -246,6 +246,11 @@ const StudentDashboard = () => {
                             <div className="relative bg-white dark:bg-slate-800 rounded-[2.5rem] border-[4px] border-white dark:border-slate-800 shadow-xl overflow-hidden p-[2px]">
                                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-[2.3rem] overflow-hidden">
                                     <Leaderboard limit={5} />
+                                    <div className="bg-white dark:bg-slate-800 p-3 text-center border-t border-slate-100 dark:border-slate-700">
+                                        <a href="/leaderboard" className="text-sm font-bold text-amber-500 hover:text-amber-600 dark:hover:text-amber-400 no-underline">
+                                            View Full Leaderboard →
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -261,18 +266,22 @@ const StudentDashboard = () => {
                             </h3>
                             <ul className="space-y-4">
                                 <li className="flex items-center gap-4 group cursor-pointer p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                                    <div className="w-10 h-10 rounded-xl bg-[#14b8a6] text-white flex items-center justify-center text-sm shadow-inner shrink-0 group-hover:scale-110 transition-transform">
-                                        <span className="material-symbols-outlined text-[20px]">check</span>
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm shadow-inner shrink-0 transition-all ${user ? 'bg-[#14b8a6] text-white scale-110' : 'border-4 border-slate-200 dark:border-slate-600'}`}>
+                                        {user && <span className="material-symbols-outlined text-[20px]">check</span>}
                                     </div>
-                                    <span className="text-sm font-bold text-slate-400 dark:text-slate-500 line-through truncate">Login to the platform</span>
+                                    <span className={`text-sm font-bold truncate transition-colors ${user ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-700 dark:text-slate-300'}`}>Login to the platform</span>
                                 </li>
                                 <li className="flex items-center gap-4 group cursor-pointer p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                                    <div className="w-10 h-10 rounded-xl border-4 border-slate-200 dark:border-slate-600 shrink-0 group-hover:border-[#6366f1] transition-colors"></div>
-                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300 group-hover:text-[#6366f1] transition-colors truncate">Complete 1 Science Quiz</span>
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm shadow-inner shrink-0 transition-all ${user?.dailyQuizzes > 0 ? 'bg-[#14b8a6] text-white scale-110' : 'border-4 border-slate-200 dark:border-slate-600 group-hover:border-[#6366f1]'}`}>
+                                        {user?.dailyQuizzes > 0 && <span className="material-symbols-outlined text-[20px]">check</span>}
+                                    </div>
+                                    <span className={`text-sm font-bold truncate transition-colors ${user?.dailyQuizzes > 0 ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-700 dark:text-slate-300 group-hover:text-[#6366f1]'}`}>Complete 1 Quiz</span>
                                 </li>
                                 <li className="flex items-center gap-4 group cursor-pointer p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                                    <div className="w-10 h-10 rounded-xl border-4 border-slate-200 dark:border-slate-600 shrink-0 group-hover:border-[#6366f1] transition-colors"></div>
-                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300 group-hover:text-[#6366f1] transition-colors truncate">Earn 500 XP Today</span>
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm shadow-inner shrink-0 transition-all ${user?.dailyXP >= 500 ? 'bg-[#14b8a6] text-white scale-110' : 'border-4 border-slate-200 dark:border-slate-600 group-hover:border-[#6366f1]'}`}>
+                                        {user?.dailyXP >= 500 && <span className="material-symbols-outlined text-[20px]">check</span>}
+                                    </div>
+                                    <span className={`text-sm font-bold truncate transition-colors ${user?.dailyXP >= 500 ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-700 dark:text-slate-300 group-hover:text-[#6366f1]'}`}>Earn 500 XP Today</span>
                                 </li>
                             </ul>
                         </div>
@@ -286,11 +295,23 @@ const StudentDashboard = () => {
                                 </div>
                                 <span className="leading-tight">Recent<br />Achievements</span>
                             </h3>
-                            <div className="grid grid-cols-3 gap-3">
-                                {badges.map(badge => (
-                                    <Badge key={badge.id} {...badge} />
-                                ))}
-                            </div>
+                            {(!user?.badges || user.badges.length === 0) ? (
+                                <div className="text-center py-6">
+                                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-500">lock</span>
+                                    </div>
+                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Play quizzes to earn badges!</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {user.badges.slice(-3).reverse().map(badge => (
+                                        <div key={badge._id || badge.badgeId} className="bg-slate-50 dark:bg-slate-700/30 rounded-2xl p-3 border-2 border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center text-center gap-2">
+                                            <span className="text-3xl">{badge.icon || '🏆'}</span>
+                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 leading-tight">{badge.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                     </div>
