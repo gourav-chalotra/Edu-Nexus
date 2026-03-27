@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 import { subjectAPI, chapterAPI, quizAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -8,11 +9,20 @@ const CurriculumContext = createContext();
 export const useCurriculum = () => useContext(CurriculumContext);
 
 export const CurriculumProvider = ({ children }) => {
+    const { user, loading: authLoading } = useAuth();
     const [curriculum, setCurriculum] = useState({});
     const [loading, setLoading] = useState(true);
 
-    // Fetch all subjects and chapters on mount
+    // Fetch all subjects and chapters when user changes or auth loading finishes
     useEffect(() => {
+        if (authLoading) return;
+
+        if (!user) {
+            setCurriculum({});
+            setLoading(false);
+            return;
+        }
+
         const fetchCurriculum = async () => {
             setLoading(true);
             try {
@@ -52,7 +62,7 @@ export const CurriculumProvider = ({ children }) => {
         };
 
         fetchCurriculum();
-    }, []);
+    }, [user, authLoading]);
 
     const updateChapterVideo = async (subjectId, chapterId, videoUrl) => {
         try {

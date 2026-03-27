@@ -473,28 +473,12 @@ const StudentDashboard = () => {
                                                     defaultValue={user?.classLevel}
                                                     className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-700/50 border-2 border-slate-200 dark:border-slate-600 rounded-2xl focus:ring-4 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none text-slate-900 dark:text-white font-medium transition-all"
                                                 >
-                                                    {[6, 7, 8, 9, 10, 11, 12].map(c => (
+                                                    {[6, 7, 8, 9, 10].map(c => (
                                                         <option key={c} value={c}>Class {c}</option>
                                                     ))}
                                                 </select>
                                             </div>
 
-                                            {/* Stream Selection (Visible only for Class 11 & 12) */}
-                                            {(user?.classLevel === 11 || user?.classLevel === 12) && (
-                                                <div className="space-y-1">
-                                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-2">Stream</label>
-                                                    <select
-                                                        name="stream"
-                                                        defaultValue={user?.stream || ''}
-                                                        className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-700/50 border-2 border-slate-200 dark:border-slate-600 rounded-2xl focus:ring-4 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none text-slate-900 dark:text-white font-medium transition-all"
-                                                    >
-                                                        <option value="">Select Stream...</option>
-                                                        <option value="Science">Science</option>
-                                                        <option value="Commerce">Commerce</option>
-                                                        <option value="Arts">Arts</option>
-                                                    </select>
-                                                </div>
-                                            )}
 
                                             <div className="space-y-1">
                                                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-2">Age</label>

@@ -92,8 +92,6 @@ const Register = () => {
                                     <option value="8">Class 8 - Intermediate</option>
                                     <option value="9">Class 9 - Advanced</option>
                                     <option value="10">Class 10 - Expert</option>
-                                    <option value="11">Class 11 - Master</option>
-                                    <option value="12">Class 12 - Grandmaster</option>
                                 </select>
                                 <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-500">
                                     <span className="material-symbols-outlined">expand_more</span>

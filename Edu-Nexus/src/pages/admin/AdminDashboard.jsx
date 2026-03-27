@@ -283,7 +283,7 @@ const AdminDashboard = () => {
                                                         value={selectedClassToAdd}
                                                         onChange={(e) => setSelectedClassToAdd(e.target.value)}
                                                     >
-                                                        {[6, 7, 8, 9, 10, 11, 12].map(cls => (
+                                                        {[6, 7, 8, 9, 10].map(cls => (
                                                             <option key={cls} value={cls}>Class {cls}</option>
                                                         ))}
                                                     </select>
@@ -436,7 +436,7 @@ const AdminDashboard = () => {
                                         onChange={(e) => setFilterClass(e.target.value)}
                                     >
                                         <option value="">All Classes</option>
-                                        {[6, 7, 8, 9, 10, 11, 12].map(c => (
+                                        {[6, 7, 8, 9, 10].map(c => (
                                             <option key={c} value={c}>Class {c}</option>
                                         ))}
                                     </select>

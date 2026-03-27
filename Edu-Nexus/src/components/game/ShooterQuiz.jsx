@@ -281,6 +281,7 @@ const ShooterQuiz = ({ quiz, onComplete }) => {
     const advanceLevel = () => {
         setFeedbackInfo(null);
         if (currentQuestionIndex < quiz.questions.length - 1) {
+            gameEngine.current.isTransitioning = false;
             setCurrentQuestionIndex(prev => prev + 1);
             setGameState('playing');
         } else {
@@ -291,6 +292,7 @@ const ShooterQuiz = ({ quiz, onComplete }) => {
     const restartLevel = () => {
         setFeedbackInfo(null);
         gameEngine.current.player.x = GAME_WIDTH / 2 - PLAYER_WIDTH / 2;
+        gameEngine.current.isTransitioning = false;
         initializeTargets();
         setGameState('playing');
     };

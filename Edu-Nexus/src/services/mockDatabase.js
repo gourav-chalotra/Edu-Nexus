@@ -69,14 +69,13 @@ const seedDatabase = () => {
     if (!storedSubjects) {
         const subjects = [];
         const chapters = [];
-        const classes = ['6', '7', '8', '9', '10', '11', '12'];
+        const classes = ['6', '7', '8', '9', '10'];
         const subjectTypes = [
+            { id: 'eng', name: 'English', icon: '🇬🇧' },
+            { id: 'hin', name: 'Hindi', icon: '🇮🇳' },
             { id: 'math', name: 'Mathematics', icon: '📐' },
-            { id: 'eng', name: 'English', icon: '📚' },
-            { id: 'phy', name: 'Physics', icon: '⚛️' },
-            { id: 'chem', name: 'Chemistry', icon: '🧪' },
-            { id: 'bio', name: 'Biology', icon: '🧬' },
-            { id: 'comp', name: 'Computer Sc.', icon: '💻' }
+            { id: 'sci', name: 'Science', icon: '🔬' },
+            { id: 'sst', name: 'Social Science', icon: '🌍' }
         ];
 
         classes.forEach(classLevel => {
